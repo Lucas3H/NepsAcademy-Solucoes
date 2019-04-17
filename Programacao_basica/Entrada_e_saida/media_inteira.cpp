@@ -1,4 +1,4 @@
-Link: https://neps.academy/lesson/122
+//Link: https://neps.academy/lesson/122
 
 #include <iostream>
 
