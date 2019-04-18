@@ -1,5 +1,4 @@
-// Está dando TLE
-
+// https://neps.academy/lesson/271
 #include<bits/stdc++.h>
 
 using namespace std;
@@ -11,46 +10,47 @@ int main(){
 
 	while(n != 0 || d != 0){
 
-		vector<int> n1;
-		vector<int> n2;
-		stack<int> must_be_deleted;
+		vector<int> r;
+		vector<int> apagados;
+
 		char numero[100010];
 		scanf(" %s", numero);
 
-		for(int i = 0; i < n; i++){
-			n1.push_back(int(numero[i] - 48));
-			n2.push_back(int(numero[i] - 48));
-		}	
+		for(int i = 0; i < n; i++) r.push_back(int(numero[i] - 48));
 
-		sort(n2.begin(), n2.end());
+		stack<int> resp;
+		int j = 0;
+		while(apagados.size() < d && j < n){
 
-		for(int i = 0; i < d; i++){
-			must_be_deleted.push(n2[i]);
-		}
-
-		int aux[100010];
-
-		memset(aux, 1, sizeof(aux));
-
-		for(int i = 9; i >= 0; i--){
-			int j = 0;
-			while(must_be_deleted.top() == i && j < n){
-				if(n1[j] == i){
-					must_be_deleted.pop();
-					aux[j] = 0;
-				}
-
+			if(resp.empty()){
+				resp.push(r[j]);
 				j++;
-
-				if(must_be_deleted.empty()) break;
 			}
 
-			if(must_be_deleted.empty()) break;
+			else if(r[j] > resp.top()){
+				apagados.push_back(resp.top());
+				resp.pop();
+			}
+			else{
+				resp.push(r[j]);
+				j++;
+			}
 		}
 
-		for(int i = 0; i < n; i++){
-			if(aux[i]) printf("%d", n1[i]);
+		for(int i = j; i < n; i++) resp.push(r[i]);
+
+		vector<int> R;
+
+		while(resp.size() > n-d)resp.pop();
+
+		for(int i = 0; i < n - d; i++){
+			R.push_back(resp.top());
+			resp.pop();
 		}
+
+
+		
+		for(int i = n-1-d; i >= 0; i--) printf("%d", R[i]);
 
 		printf("\n");
 
