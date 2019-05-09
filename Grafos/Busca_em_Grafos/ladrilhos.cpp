@@ -1,48 +1,66 @@
 // https://neps.academy/lesson/209
-
 #include <bits/stdc++.h>
 
 using namespace std;
 
-vector<int> student[1010];
-int alunos, amizades;
-int component[1010];
+int rows, columns;
+int l[205][205], visto[205][205], component[40010], c = 0;
 
-void dfs(int st){
-	for(int i = 0; i < student[st].size(); i++){
-		if(component[student[st][i]] == -1){
-			component[student[st][i]] = component[st];
-			dfs(student[st][i]);
+void dfs(int x, int y){
+	if(x >= 1 && x <= rows && y >= 1 && y <= columns){
+		visto[x][y] = 0;
+		
+		if(l[x][y] == l[x-1][y] && visto[x-1][y] == -1){
+			component[c]++;
+			dfs(x-1, y);
+		}
+		if(l[x][y] == l[x+1][y] && visto[x+1][y] == -1){
+			component[c]++;
+			dfs(x+1, y);
+		
+		}
+		if(l[x][y] == l[x][y-1] && visto[x][y-1] == -1){
+			component[c]++;
+			dfs(x, y-1);
+		}
+		if(l[x][y] == l[x][y+1] && visto[x][y+1] == -1){
+			component[c]++;
+			dfs(x, y+1);
 		}
 	}
 }
 
 int main(){
-	memset(component, -1, sizeof(component));
 	
-	cin >> alunos >> amizades;
+	cin >> rows >> columns;
 	
-	for(int i = 0; i < amizades; i++){
-		int a, b;
-		cin >> a >> b;
-		
-		student[a].push_back(b);
-		student[b].push_back(a);
+	memset( visto, -1, sizeof(visto));
+	
+	for(int i = 0; i < 40010; i++) component[i] = 1;
+	
+	for(int i = 1; i <= rows; i++){
+		for(int j = 1; j <= columns; j++) cin >> l[i][j];
 	}
 	
-	int resp = 1;
+	for(int i = 1 ; i <= rows; i++) l[i][0] = l[i][columns+1] = -1;
+	for(int i = 1 ; i <= columns; i++) l[0][i] = l[rows+1][i] = -1;
 	
-	component[1] = resp;
-	dfs(1);
-	
-	for(int i = 1; i <= alunos; i++){
-		if(component[i] == -1){
-			component[i] = ++resp;
-			dfs(i);
+	for(int i = 1; i <= rows; i++){
+		for(int j = 1; j <= columns; j++){
+			if(visto[i][j] == -1){
+				c++;
+				dfs(i, j);
+			}
 		}
 	}
-
-	cout << resp << endl;
-
+	
+	int min = 40010;
+	
+	for(int i = 1; i <= c; i++){
+		if(min > component[i]) min = component[i];
+	}
+	
+	cout << min << endl;
+	
 	return 0;
 }
